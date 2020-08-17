@@ -217,9 +217,9 @@ def main():
         player.draw(WINDOW)  # Draws the Player to the Window
 
         # Handles if Player loses
-        if lost:
+        """if lost:
             lost_menu()
-            """lost_label = lost_font.render("You Lost!", 1, WHITE)
+            lost_label = lost_font.render("You Lost!", 1, WHITE)
             WINDOW.blit(lost_label, (WIDTH / 2 - lost_label.get_width() / 2, 350))  # Shows text in centre of screen"""
 
         pygame.display.update()
