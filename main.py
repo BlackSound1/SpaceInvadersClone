@@ -1,6 +1,7 @@
-import os
-import pygame
 import random
+
+import pygame
+
 import Functions
 
 pygame.font.init()  # Initializes font stuff
@@ -183,15 +184,10 @@ def main():
     FPS = 60
     level = 0
     lives = 5
-    lost = False
-    lost_count = 0
     clock = pygame.time.Clock()
     main_font = pygame.font.SysFont("comicsans", 50)  # Sets the font
-    #lost_font = pygame.font.SysFont("comicsans", 60)  # Sets the font for when Player loses
-
     enemy_velocity = 10
     laser_velocity = 25
-
     player = Player(300, 630)
     enemies = []
     wave_length = 5
@@ -216,12 +212,6 @@ def main():
 
         player.draw(WINDOW)  # Draws the Player to the Window
 
-        # Handles if Player loses
-        """if lost:
-            lost_menu()
-            lost_label = lost_font.render("You Lost!", 1, WHITE)
-            WINDOW.blit(lost_label, (WIDTH / 2 - lost_label.get_width() / 2, 350))  # Shows text in centre of screen"""
-
         pygame.display.update()
 
     # Main loop
@@ -231,18 +221,7 @@ def main():
 
         # Handles making the Player lose if out of lives
         if lives <= 0 or player.health <= 0:
-            """lost = True
-            lost_count += 1"""
             lost_menu()
-
-        """# If Player loses, essentially waits 3 seconds and quits game
-        if lost:
-            if lost_count > FPS * 3:
-                update_high_score(player)
-                run = False
-                # quit()
-            else:
-                continue"""
 
         # Handles if the wave is finished
         if len(enemies) == 0:
