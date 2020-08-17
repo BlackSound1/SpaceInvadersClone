@@ -188,10 +188,10 @@ def main():
     clock = pygame.time.Clock()
     main_font = pygame.font.SysFont("comicsans", 50)  # Sets the font
     #lost_font = pygame.font.SysFont("comicsans", 60)  # Sets the font for when Player loses
-    player_velocity = 15
+
     enemy_velocity = 10
     laser_velocity = 25
-    HEALTH_BAR_OFFSET = 15
+
     player = Player(300, 630)
     enemies = []
     wave_length = 5
@@ -264,17 +264,7 @@ def main():
                 quit()
 
         # Player movement
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_a] and player.x - player_velocity > 0:
-            player.x -= player_velocity
-        if keys[pygame.K_d] and player.x + player_velocity + player.get_width() < WIDTH:
-            player.x += player_velocity
-        if keys[pygame.K_w] and player.y - player_velocity > 0:
-            player.y -= player_velocity
-        if keys[pygame.K_s] and player.y + player_velocity + player.get_height() + HEALTH_BAR_OFFSET < HEIGHT:
-            player.y += player_velocity
-        if keys[pygame.K_SPACE]:
-            player.shoot()
+        Functions.move_player(player, HEIGHT, WIDTH)
 
         # Enemy movement
         for enemy in enemies[:]:  # [:] makes a copy of enemies, I think?

@@ -36,3 +36,20 @@ def load_assets(WIDTH, HEIGHT):
 
     return RED_SPACE_SHIP, RED_LASER, GREEN_SPACE_SHIP, GREEN_LASER, BLUE_SPACE_SHIP, BLUE_LASER, \
            YELLOW_SPACE_SHIP, YELLOW_LASER, BACKGROUND, high_score
+
+
+def move_player(player, HEIGHT, WIDTH):
+    HEALTH_BAR_OFFSET = 15
+    player_velocity = 15
+
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_a] and player.x - player_velocity > 0:
+        player.x -= player_velocity
+    if keys[pygame.K_d] and player.x + player_velocity + player.get_width() < WIDTH:
+        player.x += player_velocity
+    if keys[pygame.K_w] and player.y - player_velocity > 0:
+        player.y -= player_velocity
+    if keys[pygame.K_s] and player.y + player_velocity + player.get_height() + HEALTH_BAR_OFFSET < HEIGHT:
+        player.y += player_velocity
+    if keys[pygame.K_SPACE]:
+        player.shoot()
