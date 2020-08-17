@@ -16,8 +16,10 @@ GREEN = (0, 255, 0)
 
 # LOAD ASSETS #
 RED_SPACE_SHIP, RED_LASER, GREEN_SPACE_SHIP, GREEN_LASER, BLUE_SPACE_SHIP, BLUE_LASER, \
-           YELLOW_SPACE_SHIP, YELLOW_LASER, BACKGROUND, high_score = Functions.load_assets(WIDTH, HEIGHT)
+           YELLOW_SPACE_SHIP, YELLOW_LASER, BACKGROUND = Functions.load_assets(WIDTH, HEIGHT)
 
+with open("HighScore.txt", 'r') as reader:
+    high_score = int(reader.read(-1))  # Reads whole file
 
 class Ship:
     MAX_COOLDOWN = 5
@@ -195,6 +197,10 @@ def main():
     def redraw_window():  # Inner function to redraw window contents. Can only call in main()
         WINDOW.blit(BACKGROUND, (0, 0))  # Draws background onto Window
 
+        # Update high score
+        with open("HighScore.txt", 'r') as reader:
+            high_score = int(reader.read(-1))  # Reads whole file
+
         # Renders and displays the level and lives text
         lives_label = main_font.render(f"Lives: {lives}", 1, WHITE)
         level_label = main_font.render(f"Level: {level}", 1, WHITE)
@@ -221,6 +227,7 @@ def main():
 
         # Handles making the Player lose if out of lives
         if lives <= 0 or player.health <= 0:
+            update_high_score(player)
             lost_menu()
 
         # Handles if the wave is finished
@@ -276,7 +283,8 @@ def update_high_score(player):
     if player.score > high_score:
         with open("HighScore.txt", 'w') as reader:
             reader.write(str(player.score))  # Updates high score in file if necessary
-            high_score_menu(player)
+
+        high_score_menu(player)
 
 
 def high_score_menu(player):
