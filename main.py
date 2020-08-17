@@ -187,7 +187,7 @@ def main():
     lost_count = 0
     clock = pygame.time.Clock()
     main_font = pygame.font.SysFont("comicsans", 50)  # Sets the font
-    lost_font = pygame.font.SysFont("comicsans", 60)  # Sets the font for when Player loses
+    #lost_font = pygame.font.SysFont("comicsans", 60)  # Sets the font for when Player loses
     player_velocity = 15
     enemy_velocity = 10
     laser_velocity = 25
@@ -218,8 +218,9 @@ def main():
 
         # Handles if Player loses
         if lost:
-            lost_label = lost_font.render("You Lost!", 1, WHITE)
-            WINDOW.blit(lost_label, (WIDTH / 2 - lost_label.get_width() / 2, 350))  # Shows text in centre of screen
+            lost_menu()
+            """lost_label = lost_font.render("You Lost!", 1, WHITE)
+            WINDOW.blit(lost_label, (WIDTH / 2 - lost_label.get_width() / 2, 350))  # Shows text in centre of screen"""
 
         pygame.display.update()
 
@@ -230,17 +231,18 @@ def main():
 
         # Handles making the Player lose if out of lives
         if lives <= 0 or player.health <= 0:
-            lost = True
-            lost_count += 1
+            """lost = True
+            lost_count += 1"""
+            lost_menu()
 
-        # If Player loses, essentially waits 3 seconds and quits game
+        """# If Player loses, essentially waits 3 seconds and quits game
         if lost:
             if lost_count > FPS * 3:
                 update_high_score(player)
                 run = False
                 # quit()
             else:
-                continue
+                continue"""
 
         # Handles if the wave is finished
         if len(enemies) == 0:
@@ -326,6 +328,25 @@ def high_score_menu(player):
                 quit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 main_menu()
+
+
+def lost_menu():
+    lost_font = pygame.font.SysFont("comicsans", 60)  # Sets the font for when Player loses
+    run = True
+
+    while run:
+        WINDOW.blit(BACKGROUND, (0, 0))
+        lost_label = lost_font.render("You Lost!", 1, WHITE)
+        WINDOW.blit(lost_label, (WIDTH / 2 - lost_label.get_width() / 2, 350))  # Shows text in centre of screen
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                main_menu()
+
+    quit()
 
 
 def main_menu():
