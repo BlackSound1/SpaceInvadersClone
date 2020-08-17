@@ -28,14 +28,13 @@ def load_assets(WIDTH, HEIGHT):
             pygame.image.load(os.path.join("assets", "background-black.png")), (WIDTH, HEIGHT))
 
         # HIGH SCORE
-        with open("HighScore.txt", 'r') as reader:
-            high_score = int(reader.read(-1))  # Reads whole file
+
 
     except pygame.error as e:
         print("Couldn't load asset")
 
     return RED_SPACE_SHIP, RED_LASER, GREEN_SPACE_SHIP, GREEN_LASER, BLUE_SPACE_SHIP, BLUE_LASER, \
-           YELLOW_SPACE_SHIP, YELLOW_LASER, BACKGROUND, high_score
+           YELLOW_SPACE_SHIP, YELLOW_LASER, BACKGROUND
 
 
 def move_player(player, HEIGHT, WIDTH):
