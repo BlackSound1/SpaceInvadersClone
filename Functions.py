@@ -1,5 +1,46 @@
 import pygame
+
+try:
+    from pygame import mixer
+except ImportError as e:
+    print("cant load mixer")
 import os
+
+
+def load_sounds():
+    enemy_laser_1 = None
+    enemy_laser_2 = None
+    enemy_laser_3 = None
+    enemy_laser_4 = None
+    player_laser_1 = None
+    player_laser_2 = None
+    space_theme = None
+
+    pygame.mixer.init()
+
+    #pygame.mixer.music.load("sounds/Space theme.wav")
+    #pygame.mixer.music.play()
+
+    """TEST = pygame.mixer.Sound("sounds/Enemy Ship Laser 1.wav")
+    TEST.play()"""
+
+    try:
+        # LASERS
+        enemy_laser_1 = pygame.mixer.Sound("sounds/Enemy Ship Laser 1.wav")
+        enemy_laser_2 = pygame.mixer.Sound("sounds/Enemy Ship Laser 2.wav")
+        enemy_laser_3 = pygame.mixer.Sound("sounds/Enemy Ship Laser 3.wav")
+        enemy_laser_4 = pygame.mixer.Sound("sounds/Enemy Ship Laser 4.wav")
+        player_laser_1 = pygame.mixer.Sound("sounds/Player Laser-001.wav")
+        player_laser_2 = pygame.mixer.Sound("sounds/Player Laser-002.wav")
+
+        # MUSIC
+        #space_theme = pygame.mixer.Sound("sounds/Space theme.wav")
+
+    except pygame.error as e:
+        print("Couldn't load sound")
+        quit()
+
+    return enemy_laser_1, enemy_laser_2, enemy_laser_3, enemy_laser_4, player_laser_1, player_laser_2
 
 
 def load_assets(WIDTH, HEIGHT):
@@ -32,6 +73,7 @@ def load_assets(WIDTH, HEIGHT):
 
     except pygame.error as e:
         print("Couldn't load asset")
+        quit()
 
     return RED_SPACE_SHIP, RED_LASER, GREEN_SPACE_SHIP, GREEN_LASER, BLUE_SPACE_SHIP, BLUE_LASER, \
            YELLOW_SPACE_SHIP, YELLOW_LASER, BACKGROUND

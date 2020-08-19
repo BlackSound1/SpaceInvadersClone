@@ -16,10 +16,16 @@ GREEN = (0, 255, 0)
 
 # LOAD ASSETS #
 RED_SPACE_SHIP, RED_LASER, GREEN_SPACE_SHIP, GREEN_LASER, BLUE_SPACE_SHIP, BLUE_LASER, \
-           YELLOW_SPACE_SHIP, YELLOW_LASER, BACKGROUND = Functions.load_assets(WIDTH, HEIGHT)
+YELLOW_SPACE_SHIP, YELLOW_LASER, BACKGROUND = Functions.load_assets(WIDTH, HEIGHT)
+
+# LOAD SOUNDS #
+ENEMY_LASER_1, ENEMY_LASER_2, ENEMY_LASER_3, ENEMY_LASER_4, PLAYER_LASER_1, PLAYER_LASER_2 = Functions.load_sounds()
+
+sounds = [ENEMY_LASER_1, ENEMY_LASER_2, ENEMY_LASER_3, ENEMY_LASER_4, PLAYER_LASER_1, PLAYER_LASER_2]
 
 with open("HighScore.txt", 'r') as reader:
     high_score = int(reader.read(-1))  # Reads whole file
+
 
 class Ship:
     MAX_COOLDOWN = 5
@@ -54,15 +60,6 @@ class Ship:
             self.cool_down_timer = 0
         elif self.cool_down_timer > 0:  # Otherwise just increment it
             self.cool_down_timer += 1
-
-    # Handles shooting
-    def shoot(self):
-        if self.cool_down_timer is 0:  # Only shoots if cooldown is over
-            # Creates new laser and adds it to the Ships list of Lasers
-            laser = Laser(self.x, self.y, self.laser_img)
-            self.lasers.append(laser)
-
-            self.cool_down_timer = 1
 
     def move_lasers(self, velocity, obj):
         self.cooldown()  # Increments cooldown each time Lasers move
@@ -111,7 +108,7 @@ class Player(Ship):  # Inherits from Ship
     def health_bar(self, window):
         # Draws red rectangle with constant length
         pygame.draw.rect(window, RED, (self.x, self.y + self.ship_img.get_height() + 10,
-                                               self.ship_img.get_width(), 10))
+                                       self.ship_img.get_width(), 10))
 
         # Draws green rectangle with a length dependant on how much health there is left
         pygame.draw.rect(window,
@@ -124,6 +121,16 @@ class Player(Ship):  # Inherits from Ship
     def draw(self, window):
         super(Player, self).draw(window)
         self.health_bar(window)
+
+    # Handles shooting
+    def shoot(self):
+        if self.cool_down_timer is 0:  # Only shoots if cooldown is over
+            # Creates new laser and adds it to the Ships list of Lasers
+            sound: str = random.choice(["P1", "P2"])
+            laser = Laser(self.x, self.y, self.laser_img, sound)
+            self.lasers.append(laser)
+            laser.play_sound()
+            self.cool_down_timer = 1
 
 
 class Enemy(Ship):
@@ -147,18 +154,30 @@ class Enemy(Ship):
     def shoot(self):
         if self.cool_down_timer is 0:  # Only shoots if cooldown is over
             # Creates new laser and adds it to the Ships list of Lasers
-            laser = Laser(self.x - 20, self.y, self.laser_img)
+            sound: str = random.choice(["1", "2", "3"])
+            laser = Laser(self.x - 20, self.y, self.laser_img, sound)
             self.lasers.append(laser)
+            laser.play_sound()
 
             self.cool_down_timer = 1
 
 
 class Laser:
-    def __init__(self, x, y, image):
+    SOUND_MAP = {
+        "1": ENEMY_LASER_1,
+        "2": ENEMY_LASER_2,
+        "3": ENEMY_LASER_3,
+        "4": ENEMY_LASER_4,
+        "P1": PLAYER_LASER_1,
+        "P2": PLAYER_LASER_2,
+    }
+
+    def __init__(self, x, y, image, sound):
         self.x = x
         self.y = y
         self.image = image
         self.mask = pygame.mask.from_surface(self.image)
+        self.sound = self.SOUND_MAP[sound]
 
     def draw(self, window):
         window.blit(self.image, (self.x, self.y))
@@ -171,6 +190,9 @@ class Laser:
 
     def collision(self, obj):
         return collide(obj, self)
+
+    def play_sound(self):
+        self.sound.play()
 
 
 def collide(object1, object2):
@@ -193,6 +215,12 @@ def main():
     player = Player(300, 630)
     enemies = []
     wave_length = 5
+
+    pygame.mixer.music.set_volume(1)
+    pygame.mixer.music.load("sounds/Space theme.wav")
+    pygame.mixer.music.play(-1)
+
+    # SPACE_THEME.play(-1)
 
     def redraw_window():  # Inner function to redraw window contents. Can only call in main()
         WINDOW.blit(BACKGROUND, (0, 0))  # Draws background onto Window
@@ -227,7 +255,10 @@ def main():
 
         # Handles making the Player lose if out of lives
         if lives <= 0 or player.health <= 0:
+            pygame.mixer.music.stop()
+            # SPACE_THEME.stop()
             update_high_score(player)
+
             lost_menu()
 
         # Handles if the wave is finished
@@ -245,6 +276,8 @@ def main():
         # Checks if user has pressed the X button in the window and closes program
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                pygame.mixer.music.stop()
+                # SPACE_THEME.stop()
                 update_high_score(player)
                 # run = False
                 quit()
@@ -276,6 +309,9 @@ def main():
         # Velocity must be negative for Lasers to move forward
         player.move_lasers(-laser_velocity, enemies)
 
+    # When quitting, close all sounds
+    pygame.mixer.music.stop()
+    # SPACE_THEME.stop()
     quit()
 
 
@@ -302,6 +338,7 @@ def high_score_menu(player):
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                stop_all_sounds(sounds)
                 quit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 main_menu()
@@ -323,6 +360,7 @@ def lost_menu():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 main_menu()
 
+    stop_all_sounds(sounds)
     quit()
 
 
@@ -344,7 +382,13 @@ def main_menu():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 main()
 
+    stop_all_sounds(sounds)
     quit()
+
+
+def stop_all_sounds(sounds):
+    for sound in sounds:
+        sound.stop()
 
 
 if __name__ == '__main__':
