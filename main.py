@@ -7,7 +7,7 @@ import Functions
 pygame.font.init()  # Initializes font stuff
 
 # SET UP IMPORTANT OPTIONS #
-WIDTH, HEIGHT = 750, 750
+WIDTH, HEIGHT = 850, 750
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Space Invaders Clone")
 WHITE = (255, 255, 255)
@@ -330,7 +330,7 @@ def high_score_menu(player):
     font = pygame.font.SysFont("comicsans", 60)
     congrats_font = pygame.font.SysFont("comicsans", 80)
     pygame.mixer.music.load("sounds/High Score Theme.wav")
-    pygame.mixer.music.play(-1)
+    pygame.mixer.music.play(0)
 
     while run:
         WINDOW.blit(BACKGROUND, (0, 0))
@@ -352,14 +352,17 @@ def high_score_menu(player):
 
 def lost_menu():
     lost_font = pygame.font.SysFont("comicsans", 60)  # Sets the font for when Player loses
+    lost_font2 = pygame.font.SysFont("comicsans", 40)  # Sets the font for when Player loses
     pygame.mixer.music.load("sounds/Lose Theme.wav")
-    pygame.mixer.music.play(-1)
+    pygame.mixer.music.play(0)
     run = True
 
     while run:
         WINDOW.blit(BACKGROUND, (0, 0))
         lost_label = lost_font.render("You Lost!", 1, WHITE)
-        WINDOW.blit(lost_label, (WIDTH / 2 - lost_label.get_width() / 2, 350))  # Shows text in centre of screen
+        lost_label2 = lost_font2.render("You didn't get a high score!", 1, WHITE)
+        WINDOW.blit(lost_label, (WIDTH / 2 - lost_label.get_width() / 2, 250))  # Shows text in centre of screen
+        WINDOW.blit(lost_label2, (WIDTH / 2 - lost_label2.get_width() / 2, 450))  # Shows text in centre of screen
         pygame.display.update()
 
         for event in pygame.event.get():
@@ -376,6 +379,7 @@ def lost_menu():
 
 def main_menu():
     title_font = pygame.font.SysFont("verdana", 45)
+    title_font2 = pygame.font.SysFont("verdana", 35)
     pygame.mixer.music.load("sounds/Intro Theme.wav")
     pygame.mixer.music.play(-1)
     run = True
@@ -383,9 +387,11 @@ def main_menu():
     while run:
         WINDOW.blit(BACKGROUND, (0, 0))
         title_label1 = title_font.render("SPACE INVADERS CLONE!", 1, WHITE)
+        title_label3 = title_font2.render("Press WASD to move ship and SPACE to shoot", 1, WHITE)
         title_label2 = title_font.render("Press mouse to play", 1, WHITE)
 
-        WINDOW.blit(title_label1, (WIDTH / 2 - title_label1.get_width() / 2, 350))
+        WINDOW.blit(title_label1, (WIDTH / 2 - title_label1.get_width() / 2, 250))
+        WINDOW.blit(title_label3, (WIDTH / 2 - title_label3.get_width() / 2, 350))
         WINDOW.blit(title_label2, (WIDTH / 2 - title_label2.get_width() / 2, 450))
         pygame.display.update()
         for event in pygame.event.get():
