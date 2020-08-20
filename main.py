@@ -16,12 +16,12 @@ GREEN = (0, 255, 0)
 
 # LOAD ASSETS #
 RED_SPACE_SHIP, RED_LASER, GREEN_SPACE_SHIP, GREEN_LASER, BLUE_SPACE_SHIP, BLUE_LASER, \
-YELLOW_SPACE_SHIP, YELLOW_LASER, BACKGROUND = Functions.load_assets(WIDTH, HEIGHT)
+    YELLOW_SPACE_SHIP, YELLOW_LASER, BACKGROUND = Functions.load_assets(WIDTH, HEIGHT)
 
 # LOAD SOUNDS #
-ENEMY_LASER_1, ENEMY_LASER_2, ENEMY_LASER_3, ENEMY_LASER_4, PLAYER_LASER_1, PLAYER_LASER_2 = Functions.load_sounds()
+ENEMY_LASER_1, ENEMY_LASER_2, ENEMY_LASER_3, ENEMY_LASER_4, PLAYER_LASER_1, PLAYER_LASER_2, PLAYER_HIT = Functions.load_sounds()
 
-sounds = [ENEMY_LASER_1, ENEMY_LASER_2, ENEMY_LASER_3, ENEMY_LASER_4, PLAYER_LASER_1, PLAYER_LASER_2]
+sounds = [ENEMY_LASER_1, ENEMY_LASER_2, ENEMY_LASER_3, ENEMY_LASER_4, PLAYER_LASER_1, PLAYER_LASER_2, PLAYER_HIT]
 
 with open("HighScore.txt", 'r') as reader:
     high_score = int(reader.read(-1))  # Reads whole file
@@ -72,6 +72,7 @@ class Ship:
             if laser.is_off_screen(HEIGHT):
                 self.lasers.remove(laser)
             elif laser.collision(obj):
+                PLAYER_HIT.play(0)
                 obj.health -= 10
                 self.lasers.remove(laser)
 
@@ -297,6 +298,7 @@ def main():
 
             # If Enemy collides with Player, remove Player health and remove Enemy
             if collide(enemy, player):
+                PLAYER_HIT.play(0)
                 player.health -= 10
                 enemies.remove(enemy)
 
@@ -327,6 +329,8 @@ def high_score_menu(player):
     run = True
     font = pygame.font.SysFont("comicsans", 60)
     congrats_font = pygame.font.SysFont("comicsans", 80)
+    pygame.mixer.music.load("sounds/High Score Theme.wav")
+    pygame.mixer.music.play(-1)
 
     while run:
         WINDOW.blit(BACKGROUND, (0, 0))
@@ -338,14 +342,18 @@ def high_score_menu(player):
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                pygame.mixer.music.stop()
                 stop_all_sounds(sounds)
                 quit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
+                pygame.mixer.music.stop()
                 main_menu()
 
 
 def lost_menu():
     lost_font = pygame.font.SysFont("comicsans", 60)  # Sets the font for when Player loses
+    pygame.mixer.music.load("sounds/Lose Theme.wav")
+    pygame.mixer.music.play(-1)
     run = True
 
     while run:
@@ -358,14 +366,18 @@ def lost_menu():
             if event.type == pygame.QUIT:
                 run = False
             if event.type == pygame.MOUSEBUTTONDOWN:
+                pygame.mixer.music.stop()
                 main_menu()
 
+    pygame.mixer.music.stop()
     stop_all_sounds(sounds)
     quit()
 
 
 def main_menu():
     title_font = pygame.font.SysFont("verdana", 45)
+    pygame.mixer.music.load("sounds/Intro Theme.wav")
+    pygame.mixer.music.play(-1)
     run = True
 
     while run:
@@ -380,8 +392,10 @@ def main_menu():
             if event.type == pygame.QUIT:
                 run = False
             if event.type == pygame.MOUSEBUTTONDOWN:
+                pygame.mixer.music.stop()
                 main()
 
+    pygame.mixer.music.stop()
     stop_all_sounds(sounds)
     quit()
 
